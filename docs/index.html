@@ -24,7 +24,11 @@
 <h3>2. The voice</h3>
 <p>Every line is written to be heard across a loud kitchen: a fun intro, the time spoken aloud, then one clear instruction with the station and temperature. Gemini text-to-speech reads each line with a style tag and a chosen voice. Because the model sometimes reads the style tag aloud, every clip is transcribed with Whisper and trimmed or regenerated until it's clean. The audio is then loudness-normalised and padded so no syllable gets lost.</p>
 <h3>3. The speaker</h3>
-<p>A LinkPlay / Up2Stream WiFi streamer takes simple HTTP commands: play this URL as a prompt, read the volume, set the volume. The announcer serves clips from a local web server, turns the volume up for each announcement and back down before it ends, finds the speaker by its network name each time, and falls back to a Sonos if the streamer doesn't answer.</p>
+<p>Two kinds of speaker work; pick one with <code>SPEAKER_TYPE</code>. The announcer serves the clips from a local web server and the speaker fetches each one.</p>
+<ul>
+<li><b>Sonos</b> (<code>SPEAKER_TYPE=sonos</code>): each clip plays as a Sonos announcement. Sonos lowers whatever is playing, plays the clip at the volume you set, then resumes the music.</li>
+<li><b>LinkPlay / Up2Stream</b> WiFi streamers (the default) take simple HTTP commands: play this URL as a prompt, read the volume, set the volume. The announcer turns the volume up for each announcement and back down before it ends, and finds the speaker by its network name each time. If you also give a Sonos address, it falls back to the Sonos when the streamer doesn't answer.</li>
+</ul>
 <h3>4. The runner</h3>
 <p>Reads the schedule at startup, waits for each time, plays the clip and posts the text to the group. A restart replays anything from the last two minutes, so don't restart right after an announcement. Muted events go out as text only.</p>
 <h3>5. Planning your own</h3>
@@ -42,7 +46,7 @@
      │                             │
      └──────runner.py──────────────┤ at HH:MM
                 │                  ▼
-                │        LinkPlay speaker (volume boost) ── fallback ──▶ Sonos
+                │        LinkPlay speaker (volume boost)  or  Sonos (announcement)
                 ▼
         Telegram group ◀──▶ kitchen agent (edits events.tsv, regenerates, restarts)
 </pre>
