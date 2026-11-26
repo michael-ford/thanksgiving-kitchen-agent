@@ -1,0 +1,29 @@
+@page { size: letter; margin: 0.55in 0.6in; }
+body { font-family: -apple-system, "Helvetica Neue", Arial, sans-serif; font-size: 12.5pt; line-height: 1.35; color: #111; }
+h1 { font-size: 22pt; margin: 0 0 2pt; color: #8a3b12; }
+h2 { font-size: 17pt; margin: 0 0 6pt; color: #8a3b12; border-bottom: 2px solid #8a3b12; padding-bottom: 3pt; }
+h3 { font-size: 13pt; margin: 10pt 0 3pt; }
+.sub { color: #555; margin-bottom: 10pt; }
+table { border-collapse: collapse; width: 100%; }
+td, th { border-bottom: 1px solid #ccc; padding: 4pt 5pt; vertical-align: top; text-align: left; }
+th { background: #f3e6dc; }
+td.t { white-space: nowrap; font-weight: 700; width: 62pt; }
+td.w { white-space: nowrap; width: 62pt; color: #8a3b12; font-weight: 600; }
+td.box { width: 14pt; } td.box::before { content: "☐"; font-size: 14pt; }
+tr.key td { background: #fff4d6; }
+.page { page-break-after: always; } .page:last-child { page-break-after: auto; }
+ul, ol { margin: 3pt 0 6pt 18pt; padding: 0; } li { margin: 2pt 0; }
+.note { background: #f3f3f3; border-left: 4px solid #8a3b12; padding: 5pt 8pt; margin: 6pt 0; }
+.cols { columns: 2; column-gap: 22pt; }
+
+/* Screen (GitHub Pages) */
+@media screen {
+  body { max-width: 52rem; margin: 0 auto; padding: 1rem 1.2rem 3rem; background: #fffdf9; }
+  .page { margin-bottom: 2.5rem; }
+  audio { width: 100%; max-width: 26rem; }
+}
+@media print { nav.site, .no-print { display: none; } }
+nav.site { font-size: 11pt; margin-bottom: 12pt; color: #555; }
+nav.site a, a { color: #8a3b12; }
+.samples td { vertical-align: middle; }
+pre.diagram { background: #f3f3f3; padding: 8pt 10pt; overflow-x: auto; font-size: 10.5pt; line-height: 1.3; }

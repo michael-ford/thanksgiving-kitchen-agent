@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Thanksgiving kitchen crew</title><link rel="stylesheet" href="style.css"></head><body>
+<nav class="site"><a href="index.html">Kitchen crew</a> · <a href="timeline.html">Timeline</a> · <a href="recipes.html">Recipes</a></nav>
+
+<h1>Thanksgiving kitchen crew</h1>
+<div class="sub">A one-night hobby project: a talking kitchen timer and a chat assistant for a 16-person Thanksgiving dinner (October 2026).</div>
+
+<p>Cooking a big holiday dinner is mostly a scheduling problem: two ovens, a charcoal grill, a toaster oven and a dozen dishes that all have to land at 7:30. For one night we handed the clock to a couple of small programs:</p>
+<ul>
+<li><b>The announcer.</b> Every step in the timeline became a short spoken clip, generated with Gemini text-to-speech in a laid-back West Coast voice. A small Python runner played each clip on the house speakers at its time, turning the volume up for the announcement and back down afterwards, and posted the same text to the cooks' Telegram group.</li>
+<li><b>The kitchen assistant.</b> A Claude agent sat in that Telegram group. Cooks asked it recipe questions and told it when plans changed ("mushrooms are here", "push the turkey check 20 minutes"). It rewrote the schedule, generated the new clips and restarted the announcer.</li>
+<li><b>The printed timeline and recipes.</b> The same schedule and recipes on paper, for the counter.</li>
+</ul>
+
+<h2>Hear it</h2>
+<table class="samples">
+<tr><td class="t">1:40 PM</td><td>"Hold up, hold up. It's one forty. Take a little peek at that bacon in oven one. Is it crispy yet, nephew?"</td><td><audio controls preload="none" src="samples/1340.mp3"></audio></td></tr>
+<tr><td class="t">2:55 PM</td><td>"Heads up, nephew. That turkey's hitting the Keg in five minutes. Get ready."</td><td><audio controls preload="none" src="samples/1455.mp3"></audio></td></tr>
+<tr><td class="t">5:12 PM</td><td>"Ayy, cheese time, baby. It's five twelve. Brie into the toaster oven downstairs at three seventy-five, fifteen minutes."</td><td><audio controls preload="none" src="samples/1712.mp3"></audio></td></tr>
+<tr><td class="t">7:00 PM</td><td>"It's seven o'clock, and it's carving time. Carve that turkey."</td><td><audio controls preload="none" src="samples/1900.mp3"></audio></td></tr>
+<tr><td class="t">7:10 PM</td><td>"Heads up, friends. Potatoes and stuffing come out in five minutes."</td><td><audio controls preload="none" src="samples/1910.mp3"></audio></td></tr>
+</table>
+
+<h2 style="margin-top:18pt">The plan</h2>
+<ul>
+<li><a href="timeline.html">Master timeline</a>: every step from 12:35 to dinner at 7:30, by station (oven 1, oven 2, the Keg grill, toaster oven, counter).</li>
+<li><a href="recipes.html">Recipes</a>: spatchcocked turkey on a kamado-style grill, scalloped potatoes, mushroom and apple stuffing, miso-maple squash, bacon, charred Brussels sprouts, focaccia, glazed ham, baked brie, Caesar salad, cranberry sauce and gravy. All gluten-free.</li>
+</ul>
+
+<h2 style="margin-top:18pt">How it fits together</h2>
+<pre class="diagram">
+ events.tsv ──gen_clips.py──▶ clips/HHMM.mp3   (Gemini TTS, checked with Whisper)
+     │                             │
+     └──────runner.py──────────────┤ at HH:MM
+                │                  ▼
+                │        LinkPlay speaker (volume boost) ── fallback ──▶ Sonos
+                ▼
+        Telegram group ◀──▶ Claude kitchen agent (edits events.tsv, regenerates, restarts)
+</pre>
+<p>Code, setup and lessons learned are in the repository README.</p>
+</body></html>

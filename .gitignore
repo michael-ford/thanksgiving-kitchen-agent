@@ -1,0 +1,10 @@
+.env
+clips/
+announcer/clips/
+*.src
+*.log
+runner.pid
+tg_group.txt
+announcer/events.tsv
+__pycache__/
+.DS_Store
