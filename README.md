@@ -1,6 +1,8 @@
 # Thanksgiving Kitchen Agent
 
-<img src="docs/avatar.jpg" alt="Cartoon turkey head chef with a headset and clipboard, surrounded by a speaker, a barbecue and an oven" width="280">
+<p align="center">
+  <img src="docs/avatar.jpg" alt="Cartoon turkey head chef with a headset and clipboard, surrounded by a speaker, a barbecue and an oven" width="280">
+</p>
 
 Run a big holiday dinner off a talking schedule.
 
