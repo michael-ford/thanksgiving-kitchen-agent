@@ -1,8 +1,11 @@
 """Play each announcement in events.tsv at its time, then post its text to Telegram.
 
-Primary speaker: a LinkPlay / Up2Stream streamer, driven through its HTTP API
-(`playPromptUrl`), with a temporary volume boost that is restored after the clip.
-Fallback: a Sonos speaker via sonos_fallback.py.
+Speaker (SPEAKER_TYPE):
+  linkplay  a LinkPlay / Up2Stream streamer, driven through its HTTP API
+            (`playPromptUrl`), with a temporary volume boost restored after the clip.
+            If it fails twice and SONOS_IP is set, the clip plays on the Sonos instead.
+  sonos     a Sonos speaker only, as an announcement clip via sonos_play.py
+            (Sonos lowers the music, plays the clip, then resumes).
 
 events.tsv is read once, at startup. On start, any event less than
 REPLAY_WINDOW_MIN minutes in the past is played (so a restart right after an
@@ -34,11 +37,17 @@ CLIP_DIRS = os.environ.get("CLIP_DIRS", "clips").split()
 # URL where `python3 -m http.server` (run in this folder) serves the clips.
 CLIP_BASE_URL = os.environ["CLIP_BASE_URL"].rstrip("/") + "/"
 
+SPEAKER_TYPE = os.environ.get("SPEAKER_TYPE", "linkplay").lower()  # linkplay | sonos
+if SPEAKER_TYPE not in ("linkplay", "sonos"):
+    sys.exit(f"SPEAKER_TYPE must be linkplay or sonos, not {SPEAKER_TYPE!r}")
+
 SPEAKER_HOST = os.environ.get("SPEAKER_HOST", "")  # e.g. the speaker's mDNS name
 SPEAKER_IP = os.environ.get("SPEAKER_IP", "")      # used if SPEAKER_HOST doesn't resolve
 BOOST = int(os.environ.get("BOOST", "15"))         # volume points added while a clip plays
 
-SONOS_IP = os.environ.get("SONOS_IP", "")
+SONOS_IP = os.environ.get("SONOS_IP", "")         # required for sonos; optional fallback for linkplay
+if SPEAKER_TYPE == "sonos" and not SONOS_IP:
+    sys.exit("SPEAKER_TYPE=sonos needs SONOS_IP")
 SONOS_VOLUME = os.environ.get("SONOS_VOLUME", "50")
 
 TELEGRAM_BOT_TOKEN = os.environ.get("TELEGRAM_BOT_TOKEN", "")
@@ -82,6 +91,10 @@ def play(name):
     d = find_clip(name)
     url = f"{CLIP_BASE_URL}{d}/{name}.mp3"
 
+    if SPEAKER_TYPE == "sonos":
+        play_sonos(name, url)
+        return
+
     for _ in range(2):
         ip = speaker_ip()
 
@@ -116,11 +129,16 @@ def play(name):
     if not SONOS_IP:
         log("no fallback speaker configured", name)
         return
+    log("falling back to sonos", name)
+    play_sonos(name, url)
+
+
+def play_sonos(name, url):
     r = subprocess.run(
-        ["uv", "run", "-q", str(HERE / "sonos_fallback.py"), SONOS_IP, url, SONOS_VOLUME],
+        ["uv", "run", "-q", str(HERE / "sonos_play.py"), SONOS_IP, url, SONOS_VOLUME],
         capture_output=True, text=True, timeout=60,
     )
-    log("FALLBACK sonos", name, r.returncode, (r.stdout + r.stderr)[-200:])
+    log("played sonos", SONOS_IP, name, r.returncode, (r.stdout + r.stderr)[-200:])
 
 
 def post(text):

@@ -3,9 +3,10 @@
 # ///
 """Play an audio URL on a Sonos speaker as an announcement clip (ducks, then resumes what was playing).
 
-    uv run sonos_fallback.py <sonos-ip> <clip-url> <volume>
+    uv run sonos_play.py <sonos-ip> <clip-url> <volume>
 
-runner.py calls this when the main speaker doesn't answer.
+runner.py calls this for every clip when SPEAKER_TYPE=sonos, or as the fallback when the
+LinkPlay speaker doesn't answer.
 """
 
 import asyncio

@@ -15,8 +15,9 @@ flowchart LR
     C --> H[local HTTP server]
     E --> R[runner.py]
     R -->|playPromptUrl + volume boost| S[LinkPlay speaker]
+    R -->|or: announcement clip| SO
     S -.->|fetches clip| H
-    R -.->|fallback| SO[Sonos]
+    S -.->|fallback| SO[Sonos]
     R -->|sendMessage| T[Telegram group]
     T <--> A[Kitchen agent<br/>agent/CLAUDE.md]
     A -->|edits, regenerates, restarts| E
@@ -91,8 +92,11 @@ the big moves. Give the persona a flavour (ours was a laid-back West Coast voice
 - **Finding the speaker.** DHCP addresses can change mid-evening, so the runner looks
   up the speaker's mDNS name (`SPEAKER_HOST`) before each clip and falls back to a fixed
   IP (`SPEAKER_IP`).
-- **Sonos fallback.** If the speaker fails twice, `sonos_fallback.py` plays the same URL
-  as a Sonos announcement clip (`SONOS_IP`, `SONOS_VOLUME`).
+- **Sonos.** Set `SPEAKER_TYPE=sonos` (with `SONOS_IP`, `SONOS_VOLUME`) to use a Sonos
+  as the only speaker. `sonos_play.py` sends each clip as a Sonos announcement: Sonos
+  lowers whatever is playing, plays the clip at `SONOS_VOLUME`, then resumes the music,
+  so no volume boost or restore is needed. With `SPEAKER_TYPE=linkplay`, a `SONOS_IP` is
+  used as the fallback when the LinkPlay speaker fails twice.
 
 ### 4. The runner
 
@@ -126,7 +130,7 @@ the big moves. Give the persona a flavour (ours was a laid-back West Coast voice
 ## Quick start
 
 Needs Python 3.10+, `ffmpeg`/`ffprobe` and `curl` on PATH, and
-[uv](https://docs.astral.sh/uv/) for the Sonos fallback.
+[uv](https://docs.astral.sh/uv/) for Sonos playback.
 
 ```bash
 cp .env.example .env                       # fill in keys, speaker, Telegram
@@ -158,7 +162,7 @@ minute. The clip for `17:12` is `clips/1712.mp3`. Times are for today.
 announcer/
   runner.py             plays the schedule, posts to Telegram
   gen_clips.py          TTS + transcript check for a TSV of lines
-  sonos_fallback.py     plays one clip on a Sonos (uv inline dependencies)
+  sonos_play.py         plays one clip on a Sonos (uv inline dependencies)
   events.example.tsv    an example schedule for a 7:30 PM dinner
 agent/CLAUDE.md         the kitchen agent's instructions (template)
 docs/                   GitHub Pages: overview, example timeline and recipes, sample clips
