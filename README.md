@@ -2,10 +2,19 @@
 
 <img src="docs/avatar.jpg" alt="Cartoon turkey head chef with a headset and clipboard, surrounded by a speaker, a barbecue and an oven" width="280">
 
-Run a big holiday dinner off a talking schedule. Every cooking step is announced on
-your house speaker at its time ("It's three o'clock, and the bird is going on!"), the
-same text lands in the cooks' Telegram group, and an AI agent in that group answers
-recipe questions and reschedules announcements when plans change.
+Run a big holiday dinner off a talking schedule.
+
+## Features
+
+- **Every cooking step announced on your home speaker** at its time ("It's three
+  o'clock, and the bird is going on!"). Works with LinkPlay / Up2Stream speakers or Sonos.
+- **A Telegram group chat with the agent.** Each announcement lands there too. Ask it
+  recipe questions, get updates, and tell it what changed; it moves or rewrites the
+  announcements to match.
+- **Any voice and style you like.** Clips are made with Gemini text-to-speech from a
+  short style tag, and checked with Whisper so the tag never gets read out loud.
+- **Speaks over the music.** The volume goes up for each announcement and back down after.
+- **Printable timeline and recipe cards** as example pages you can adapt.
 
 This repo is the method plus the small amount of code it needs. The timeline and
 recipes in [`docs/`](docs/) are examples; plan your own dinner and feed it in.
