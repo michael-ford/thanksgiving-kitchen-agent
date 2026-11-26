@@ -1,5 +1,7 @@
 # Thanksgiving Kitchen Agent
 
+<img src="docs/avatar.jpg" alt="Cartoon turkey head chef with a headset and clipboard, surrounded by a speaker, a barbecue and an oven" width="280">
+
 Run a big holiday dinner off a talking schedule. Every cooking step is announced on
 your house speaker at its time ("It's three o'clock, and the bird is going on!"), the
 same text lands in the cooks' Telegram group, and an AI agent in that group answers
