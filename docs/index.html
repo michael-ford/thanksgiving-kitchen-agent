@@ -1,17 +1,12 @@
 <!doctype html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Thanksgiving kitchen crew</title><link rel="stylesheet" href="style.css"></head><body>
-<nav class="site"><a href="index.html">Kitchen crew</a> · <a href="timeline.html">Timeline</a> · <a href="recipes.html">Recipes</a></nav>
+<title>Thanksgiving Kitchen Agent</title><link rel="stylesheet" href="style.css"></head><body>
+<nav class="site"><a href="index.html">Thanksgiving Kitchen Agent</a> · <a href="timeline.html">Example timeline</a> · <a href="recipes.html">Example recipes</a></nav>
 
-<h1>Thanksgiving kitchen crew</h1>
-<div class="sub">A one-night hobby project: a talking kitchen timer and a chat assistant for a 16-person Thanksgiving dinner (October 2026).</div>
+<h1>Thanksgiving Kitchen Agent</h1>
+<div class="sub">Run a big holiday dinner off a talking schedule: spoken announcements on your house speaker, the same text in the cooks' group chat, and an AI agent that reschedules when plans change.</div>
 
-<p>Cooking a big holiday dinner is mostly a scheduling problem: two ovens, a charcoal grill, a toaster oven and a dozen dishes that all have to land at 7:30. For one night we handed the clock to a couple of small programs:</p>
-<ul>
-<li><b>The announcer.</b> Every step in the timeline became a short spoken clip, generated with Gemini text-to-speech in a laid-back West Coast voice. A small Python runner played each clip on the house speakers at its time, turning the volume up for the announcement and back down afterwards, and posted the same text to the cooks' Telegram group.</li>
-<li><b>The kitchen assistant.</b> A Claude agent sat in that Telegram group. Cooks asked it recipe questions and told it when plans changed ("mushrooms are here", "push the turkey check 20 minutes"). It rewrote the schedule, generated the new clips and restarted the announcer.</li>
-<li><b>The printed timeline and recipes.</b> The same schedule and recipes on paper, for the counter.</li>
-</ul>
+<p>A big dinner is mostly a scheduling problem: two ovens, a grill and a dozen dishes that all have to land at the same moment. This project hands the clock to a few small programs. You plan the dinner; they keep everyone on time.</p>
 
 <h2>Hear it</h2>
 <table class="samples">
@@ -22,10 +17,22 @@
 <tr><td class="t">7:10 PM</td><td>"Heads up, friends. Potatoes and stuffing come out in five minutes."</td><td><audio controls preload="none" src="samples/1910.mp3"></audio></td></tr>
 </table>
 
-<h2 style="margin-top:18pt">The plan</h2>
+<h2 style="margin-top:18pt">The method</h2>
+<h3>1. The kitchen agent</h3>
+<p>A Telegram bot in a group with everyone cooking, connected to a Claude agent that can edit the schedule. Cooks ask it recipe questions or tell it what changed ("mushrooms are here", "push the turkey check 20 minutes"). It rewrites the affected announcements, makes the new clips, restarts the announcer and confirms in one line. Replies stay short: people read them with wet hands.</p>
+<h3>2. The voice</h3>
+<p>Every line is written to be heard across a loud kitchen: a fun intro, the time spoken aloud, then one clear instruction with the station and temperature. Gemini text-to-speech reads each line with a style tag and a chosen voice. Because the model sometimes reads the style tag aloud, every clip is transcribed with Whisper and trimmed or regenerated until it's clean. The audio is then loudness-normalised and padded so no syllable gets lost.</p>
+<h3>3. The speaker</h3>
+<p>A LinkPlay / Up2Stream WiFi streamer takes simple HTTP commands: play this URL as a prompt, read the volume, set the volume. The announcer serves clips from a local web server, turns the volume up for each announcement and back down before it ends, finds the speaker by its network name each time, and falls back to a Sonos if the streamer doesn't answer.</p>
+<h3>4. The runner</h3>
+<p>Reads the schedule at startup, waits for each time, plays the clip and posts the text to the group. A restart replays anything from the last two minutes, so don't restart right after an announcement. Muted events go out as text only.</p>
+<h3>5. Planning your own</h3>
+<p>Start from dinner time and work backwards. Map every station and check that no oven needs two temperatures at once. Put the prep in the early hours, add checks and five-minute heads-ups, then turn each step into one spoken line.</p>
+
+<h2 style="margin-top:18pt">Examples</h2>
 <ul>
-<li><a href="timeline.html">Master timeline</a>: every step from 12:35 to dinner at 7:30, by station (oven 1, oven 2, the Keg grill, toaster oven, counter).</li>
-<li><a href="recipes.html">Recipes</a>: spatchcocked turkey on a kamado-style grill, scalloped potatoes, mushroom and apple stuffing, miso-maple squash, bacon, charred Brussels sprouts, focaccia, glazed ham, baked brie, Caesar salad, cranberry sauce and gravy. All gluten-free.</li>
+<li><a href="timeline.html">Example timeline</a>: a full afternoon for a 7:30 PM dinner, by station (two ovens, a kamado-style grill, toaster oven, counter).</li>
+<li><a href="recipes.html">Example recipes</a>: spatchcocked turkey on the grill, scalloped potatoes, mushroom and apple stuffing, miso-maple squash, bacon, charred Brussels sprouts, focaccia, glazed ham, baked brie, Caesar salad, cranberry sauce and gravy. All gluten-free.</li>
 </ul>
 
 <h2 style="margin-top:18pt">How it fits together</h2>
@@ -36,7 +43,7 @@
                 │                  ▼
                 │        LinkPlay speaker (volume boost) ── fallback ──▶ Sonos
                 ▼
-        Telegram group ◀──▶ Claude kitchen agent (edits events.tsv, regenerates, restarts)
+        Telegram group ◀──▶ kitchen agent (edits events.tsv, regenerates, restarts)
 </pre>
-<p>Code, setup and lessons learned are in the repository README.</p>
+<p>Code, setup and the full how-to are in the repository README.</p>
 </body></html>
